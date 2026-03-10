@@ -19,6 +19,7 @@ public final class HeaderBoundary implements Scalar<Boolean> {
     this.cursor.rewind();
     final class State {
       private int current = 0;
+
       void update(final int b) {
         if ((this.current == 0 || this.current == 2) && b == '\r') {
           this.current++;
@@ -28,25 +29,26 @@ public final class HeaderBoundary implements Scalar<Boolean> {
           this.current = (b == '\r') ? 1 : 0;
         }
       }
+
       boolean finished() {
         return this.current >= 4;
       }
     }
     final State state = new State();
-    new While(
-      new Scalar<Boolean>() {
-        @Override
-        public Boolean value() throws IOException {
-          return HeaderBoundary.this.cursor.exists() && !state.finished();
-        }
-      },
-      new While.Action() {
-        @Override
-        public void apply() throws IOException {
-          state.update(HeaderBoundary.this.cursor.current());
-          HeaderBoundary.this.cursor.next();
-        }
-      }
-    ).value();
+    new Cycle(
+        new Limit() {
+          @Override
+          public boolean value() throws IOException {
+            return HeaderBoundary.this.cursor.exists() && !state.finished();
+          }
+        },
+        new Step() {
+          @Override
+          public Object value() throws IOException {
+            state.update(HeaderBoundary.this.cursor.current());
+            HeaderBoundary.this.cursor.next();
+            return this;
+          }
+        }).value();
   }
 }

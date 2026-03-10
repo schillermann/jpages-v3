@@ -12,19 +12,20 @@ public final class LineFromCursor implements Line {
   @Override
   public String string() throws IOException {
     final StringBuilder buf = new StringBuilder();
-    new While(
-        new Scalar<Boolean>() {
+    new Cycle(
+        new Limit() {
           @Override
-          public Boolean value() throws IOException {
+          public boolean value() throws IOException {
             return LineFromCursor.this.cursor.exists()
                 && LineFromCursor.this.cursor.current() != '\r';
           }
         },
-        new While.Action() {
+        new Step() {
           @Override
-          public void apply() throws IOException {
+          public Object value() throws IOException {
             buf.append((char) LineFromCursor.this.cursor.current());
             LineFromCursor.this.cursor.next();
+            return this;
           }
         }).value();
     if (this.cursor.exists() && this.cursor.current() == '\r') {

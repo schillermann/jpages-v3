@@ -19,6 +19,7 @@ public final class HeaderLine {
         private String header = "";
         private boolean done = false;
         private int next = -1;
+
         void step() throws IOException {
           this.next = HeaderLine.this.source.read();
           if (this.next == -1) {
@@ -37,28 +38,30 @@ public final class HeaderLine {
             buffer.write(this.next);
           }
         }
+
         boolean finished() {
           return this.done;
         }
+
         String found() {
           return this.header;
         }
       }
       final State state = new State();
-      new While(
-        new Scalar<Boolean>() {
-          @Override
-          public Boolean value() throws IOException {
-            return !state.finished();
-          }
-        },
-        new While.Action() {
-          @Override
-          public void apply() throws IOException {
-            state.step();
-          }
-        }
-      ).value();
+      new Cycle(
+          new Limit() {
+            @Override
+            public boolean value() throws IOException {
+              return !state.finished();
+            }
+          },
+          new Step() {
+            @Override
+            public Object value() throws IOException {
+              state.step();
+              return this;
+            }
+          }).value();
       return state.found();
     } catch (IOException ex) {
       throw new IllegalStateException("Failed to read header", ex);
