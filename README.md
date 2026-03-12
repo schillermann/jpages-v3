@@ -44,7 +44,7 @@ public class MyWebServer {
             new ResponseStatusLineOk(
                 new ResponseHeader(
                     new ResponseBody(
-                        String.format(
+                        new FormattedText(
                             "<html><body><h1>Your Browser: %s</h1><p>Body: %s</p></body></html>",
                             agent.exists() ? agent.string() : "Unknown",
                             body)),
@@ -53,6 +53,29 @@ public class MyWebServer {
         }, 8080).listen();
     }
 }
+```
+
+## Working with JSON
+
+To read a JSON body from a request in an elegant way, you can use the `TextOfJson` decorator:
+
+```java
+import de.schillermann.jresponses.*;
+import java.io.IOException;
+
+new Front(socket -> {
+    Request request = new RequestFromSocket(socket);
+    Text name = new TextOfJson(
+        new RequestBodyJson(request),
+        "name"
+    );
+
+    new ResponseStatusLineOk(
+        new ResponseBody(
+            new FormattedText("Hello, %s!", name)
+        )
+    ).printTo(socket.getOutputStream());
+}, 8080).listen();
 ```
 
 ## Routing
@@ -128,9 +151,12 @@ public final class UserBody implements Response {
 
     @Override
     public void printTo(OutputStream out) throws IOException {
-        final String message = this.name.isEmpty() 
-            ? "Please, log in." 
-            : String.format("Welcome, %s!", this.name);
+        final Text message;
+        if (this.name.isEmpty()) {
+            message = new TextOf("Please, log in.");
+        } else {
+            message = new FormattedText("Welcome, %s!", this.name);
+        }
         new ResponseBody(message).printTo(out);
     }
 }
