@@ -168,7 +168,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'de.schillermann.jresponses:jresponses:0.1.0'
+    implementation 'de.schillermann:jresponses:0.1.0'
 }
 ```
 
