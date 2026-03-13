@@ -4,6 +4,14 @@ A simple, composable Java web framework built on raw sockets.
 
 Inspired by pure OOP, Alan Kay with [Smalltalk](https://en.wikipedia.org/wiki/Smalltalk), and Yegor Bugayenko's [Cactoos](https://github.com/yegor256/cactoos), [Takes](https://github.com/yegor256/takes), and [JPages](https://github.com/yegor256/jpages).
 
+- [Quick Start](#quick-start)
+- [Request](#request)
+  - [Body Decorators](#body-decorators)
+- [Routing](#routing)
+- [Composition over Conditionals](#composition-over-conditionals)
+- [Installation](#installation)
+- [Design](#design)
+
 ## Quick Start
 
 ```java
