@@ -26,14 +26,6 @@ public final class ResponseForked implements Response {
 
   @Override
   public void printTo(final OutputStream out) throws IOException {
-    Response target = this.fallback;
-    for (final Fork fork : this.forks) {
-      final Optional<Response> opt = fork.route(this.request);
-      if (opt.isPresent()) {
-        target = opt.get();
-        break;
-      }
-    }
-    target.printTo(out);
+    new FirstMatch(this.request, this.forks.iterator(), this.fallback).printTo(out);
   }
 }

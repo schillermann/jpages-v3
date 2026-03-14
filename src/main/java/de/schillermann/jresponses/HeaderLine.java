@@ -18,12 +18,7 @@ public final class HeaderLine implements Scalar<String> {
   @Override
   public String value() throws IOException {
     return new HeaderFound(
-      new CursorFromStream(new Scalar<InputStream>() {
-        @Override
-        public InputStream value() {
-          return HeaderLine.this.source;
-        }
-      }),
+      new CursorFromStream(new SourceStream(this.source)),
       this.prefix
     ).value();
   }
