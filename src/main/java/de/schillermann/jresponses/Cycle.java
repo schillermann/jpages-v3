@@ -19,6 +19,8 @@ public final class Cycle implements Scalar<Object> {
   public Object value() throws IOException {
     if (this.limit.value()) {
       this.step.value();
+      // Warning: This recursive call might cause a `StackOverflowError`
+      // if the loop is too deep.
       return this.value();
     }
     return new End();
