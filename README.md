@@ -11,6 +11,7 @@ Inspired by pure OOP, Alan Kay with [Smalltalk](https://en.wikipedia.org/wiki/Sm
 - [Composition over Conditionals](#composition-over-conditionals)
 - [Installation](#installation)
 - [Design](#design)
+- [Localization & Encoding](#localization--encoding)
 
 ## Quick Start
 
@@ -282,3 +283,11 @@ dependencies {
 
 JResponses is designed with composition in mind.
 Every part of an HTTP response (Status, Headers, Body) is a decorator that can be combined to build the final response output.
+
+## Localization & Encoding
+
+JResponses relies on your default Java encoding, which is not necessarily `UTF-8` by default.
+We've chosen not to hard-code `UTF-8` to align with Java's localization principles, which prioritize user choice regarding encoding and language selection.
+
+The framework uses `Charset.defaultCharset()` throughout the codebase.
+If you need to use a specific encoding like `UTF-8`, ensure that your JVM's default charset is set accordingly (e.g., via the `-Dfile.encoding=UTF-8` system property).

@@ -2,7 +2,7 @@ package de.schillermann.jresponses;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 public final class RequestBodyText implements Scalar<String> {
 
@@ -15,7 +15,7 @@ public final class RequestBodyText implements Scalar<String> {
   @Override
   public String value() throws IOException {
     try (InputStream body = this.request.body()) {
-      return new String(body.readAllBytes(), StandardCharsets.UTF_8);
+      return new String(body.readAllBytes(), Charset.defaultCharset());
     }
   }
 }

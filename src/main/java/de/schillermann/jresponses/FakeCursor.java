@@ -1,7 +1,7 @@
 package de.schillermann.jresponses;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 /**
  * Fake cursor for testing.
@@ -13,7 +13,7 @@ public final class FakeCursor implements Cursor {
   private int currentPosition;
 
   public FakeCursor(final String text) {
-    this(text.getBytes(StandardCharsets.UTF_8));
+    this(text.getBytes(Charset.defaultCharset()));
   }
 
   public FakeCursor(final byte[] data) {
