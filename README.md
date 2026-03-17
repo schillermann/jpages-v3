@@ -101,6 +101,63 @@ new Front(socket -> {
 }, 8080).listen();
 ```
 
+#### Images
+For generic image handling without validation, use `RequestBodyImage`:
+
+```java
+import de.schillermann.jresponses.*;
+import java.awt.image.BufferedImage;
+
+new Front(socket -> {
+    Request request = new RequestFromSocket(socket);
+    BufferedImage image = new RequestBodyImage(request).value();
+    // ...
+}, 8080).listen();
+```
+
+#### JPG
+Use `RequestBodyJpg` to decode the body as a `BufferedImage`.
+This decorator validates that the `Content-Type` is `image/jpeg`:
+
+```java
+import de.schillermann.jresponses.*;
+import java.awt.image.BufferedImage;
+
+new Front(socket -> {
+    Request request = new RequestFromSocket(socket);
+    BufferedImage image = new RequestBodyJpg(request).value();
+
+    new ResponseStatusLineOk(
+        new ResponseBody(
+            new FormattedText("JPG received: %dx%d pixels", 
+                image.getWidth(), image.getHeight())
+        )
+    ).printTo(socket.getOutputStream());
+}, 8080).listen();
+```
+
+#### PNG
+Use `RequestBodyPng` to decode the body as a `BufferedImage`.
+This decorator validates that the `Content-Type` is `image/png`:
+
+```java
+import de.schillermann.jresponses.*;
+import java.awt.image.BufferedImage;
+
+new Front(socket -> {
+    Request request = new RequestFromSocket(socket);
+    BufferedImage image = new RequestBodyPng(request).value();
+
+    new ResponseStatusLineOk(
+        new ResponseBody(
+            new FormattedText("PNG received: %dx%d pixels", 
+                image.getWidth(), image.getHeight())
+        )
+    ).printTo(socket.getOutputStream());
+}, 8080).listen();
+```
+
+
 ## Routing
 
 For more complex applications, you can use declarative routing with `ResponseForked` and `ForkPath`.
