@@ -13,6 +13,7 @@ Inspired by pure OOP, Alan Kay with [Smalltalk](https://en.wikipedia.org/wiki/Sm
 - [Design](#design)
   - [Composition over Conditionals](#composition-over-conditionals)
   - [Why Media?](#why-media)
+  - [Why SocketOutput?](#why-socketoutput)
 - [Localization & Encoding](#localization--encoding)
 
 ## Quick Start
@@ -218,6 +219,16 @@ The rest of your application remains a clean object-oriented, composable graph o
 You build a response by nesting decorators, and only at the very last moment do you represent it through a medium.
 
 This approach keeps your business logic pure and your infrastructure separate.
+
+### Why SocketOutput?
+
+**Object Autonomy.** We don't treat the `OutputStream` as a data bucket to be passed around.
+Instead, we wrap the `Socket` in a `SocketOutput` object.
+This is a **Capability**, not a result.
+
+By using a `Scalar`, we defer the interaction with the system resource until the object absolutely needs it.
+We aren't passing "data" (the stream), we are passing the **potential** to write.
+This keeps our objects decorative and pure, pushing the side-effect of I/O to the very last moment of execution.
 
 ## Localization & Encoding
 
