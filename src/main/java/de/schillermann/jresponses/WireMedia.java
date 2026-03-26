@@ -8,7 +8,7 @@ public final class WireMedia implements Media {
   private final Scalar<OutputStream> output;
 
   public WireMedia(final Scalar<OutputStream> out) {
-    this.output = out;
+    this.output = new StickyScalar<>(out);
   }
 
   @Override
@@ -27,8 +27,9 @@ public final class WireMedia implements Media {
 
   @Override
   public Media body(final InputStream stream) throws IOException {
-    this.output.value().write("\r\n".getBytes());
-    stream.transferTo(this.output.value());
+    final OutputStream out = this.output.value();
+    out.write("\r\n".getBytes());
+    stream.transferTo(out);
     return new WireMedia(this.output);
   }
 }
