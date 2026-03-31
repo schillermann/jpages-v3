@@ -167,8 +167,24 @@ This separation follows the Single Responsibility Principle, allowing you to ind
 - **`LoggedFront`**: Logs when the server starts and stops, including total uptime.
 - **`LoggedSession`**: Logs every incoming connection with the remote address.
 
+## Metrics
+
+When the server reaches its `Conclusion`, you can extract metrics from it using specialized "Extractor" objects. This keeps the conclusion object pure and follows the OOP principle of decoupling:
+
+```java
+Conclusion res = new WireFront(session).conclusion();
+
+long uptime = new UptimeOf(res).value();
+long total = new RequestsOf(res).value();
+
+System.out.printf(
+    "Server finished after %d ms and handled %d requests.\n",
+    uptime, total
+);
+```
 
 ## Concurrency & Configuration
+
 
 JResponses supports concurrent request processing via a thread pool.
 You can configure the port and the number of simultaneous connections directly from the command line:

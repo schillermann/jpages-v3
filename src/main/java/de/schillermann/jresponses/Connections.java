@@ -3,8 +3,10 @@ package de.schillermann.jresponses;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Accept and dispatch connections from a server socket.
@@ -39,11 +41,13 @@ public final class Connections implements Front {
    * @throws IOException If fails
    */
   public Conclusion conclusion() throws IOException {
+    final long start = System.currentTimeMillis();
+    final AtomicLong requests = new AtomicLong();
     try {
       this.exec = Executors.newFixedThreadPool(this.threads.value());
     } catch (final Exception ex) {
       if (Thread.currentThread().isInterrupted()) {
-        return new Conclusion();
+        return new Conclusion(start, System.currentTimeMillis(), 0);
       }
       throw new IOException(ex);
     }
@@ -54,18 +58,27 @@ public final class Connections implements Front {
           socket = this.server.accept();
         } catch (final IOException ex) {
           if (Thread.currentThread().isInterrupted()) {
-            return new Conclusion();
+            return new Conclusion(
+              start,
+              System.currentTimeMillis(),
+              requests.get()
+            );
           }
           throw ex;
         } catch (final Exception ex) {
           if (Thread.currentThread().isInterrupted()) {
-            return new Conclusion();
+            return new Conclusion(
+              start,
+              System.currentTimeMillis(),
+              requests.get()
+            );
           }
           throw new RuntimeException(ex);
         }
         this.exec.submit(
           () -> {
             try (socket) {
+              requests.incrementAndGet();
               this.session.dispatch(socket);
             } catch (final IOException ex) {
               throw new IllegalStateException(ex);
@@ -78,6 +91,11 @@ public final class Connections implements Front {
         this.exec.shutdown();
       }
     }
-    return new Conclusion();
+    return new Conclusion(
+      start,
+      System.currentTimeMillis(),
+      requests.get()
+    );
   }
 }
+
