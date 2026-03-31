@@ -8,6 +8,8 @@ Inspired by pure OOP, Alan Kay with [Smalltalk](https://en.wikipedia.org/wiki/Sm
 - [Request](#request)
   - [Body Decorators](#body-decorators)
 - [Routing](#routing)
+- [Logging](#logging)
+- [Metrics](#metrics)
 - [Concurrency & Configuration](#concurrency--configuration)
 - [Installation](#installation)
 - [Design](#design)
