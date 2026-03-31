@@ -13,10 +13,10 @@ public final class LoggedFront implements Front {
   }
 
   @Override
-  public Object conclusion() throws IOException {
+  public Conclusion conclusion() throws IOException {
     System.out.println("Starting JResponses front-end...");
     final long start = System.currentTimeMillis();
-    final Object res = this.origin.conclusion();
+    final Conclusion res = this.origin.conclusion();
     final long end = System.currentTimeMillis();
     System.out.printf(
         "JResponses front-end stopped (active for %d ms).\n",

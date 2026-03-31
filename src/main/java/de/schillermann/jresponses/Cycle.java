@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  * A declarative representation of a loop.
  */
-public final class Cycle implements Scalar<Object> {
+public final class Cycle implements Scalar<Conclusion> {
 
   private final Limit limit;
   private final Step step;
@@ -16,10 +16,10 @@ public final class Cycle implements Scalar<Object> {
   }
 
   @Override
-  public Object value() throws IOException {
+  public Conclusion value() throws IOException {
     while (this.limit.value()) {
       this.step.value();
     }
-    return new End();
+    return new Conclusion();
   }
 }

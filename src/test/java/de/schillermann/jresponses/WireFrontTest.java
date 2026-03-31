@@ -37,8 +37,10 @@ final class WireFrontTest {
         final AtomicBoolean finished = new AtomicBoolean(false);
         final Thread thread = new Thread(() -> {
             try {
-                front.conclusion();
-                finished.set(true);
+                final Conclusion res = front.conclusion();
+                if (res != null) {
+                    finished.set(true);
+                }
             } catch (IOException e) {
                 // Ignore
             }

@@ -38,12 +38,12 @@ public final class Connections implements Front {
    * @return The conclusion of the process
    * @throws IOException If fails
    */
-  public Object conclusion() throws IOException {
+  public Conclusion conclusion() throws IOException {
     try {
       this.exec = Executors.newFixedThreadPool(this.threads.value());
     } catch (final Exception ex) {
       if (Thread.currentThread().isInterrupted()) {
-        return new End();
+        return new Conclusion();
       }
       throw new IOException(ex);
     }
@@ -54,12 +54,12 @@ public final class Connections implements Front {
           socket = this.server.accept();
         } catch (final IOException ex) {
           if (Thread.currentThread().isInterrupted()) {
-            return new End();
+            return new Conclusion();
           }
           throw ex;
         } catch (final Exception ex) {
           if (Thread.currentThread().isInterrupted()) {
-            return new End();
+            return new Conclusion();
           }
           throw new RuntimeException(ex);
         }
@@ -78,6 +78,6 @@ public final class Connections implements Front {
         this.exec.shutdown();
       }
     }
-    return new End();
+    return new Conclusion();
   }
 }

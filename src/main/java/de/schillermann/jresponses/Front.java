@@ -11,5 +11,5 @@ public interface Front {
    * @return The conclusion of the process
    * @throws IOException If fails
    */
-  Object conclusion() throws IOException;
+  Conclusion conclusion() throws IOException;
 }
