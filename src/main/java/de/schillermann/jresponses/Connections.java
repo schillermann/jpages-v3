@@ -47,7 +47,7 @@ public final class Connections implements Front {
       this.exec = Executors.newFixedThreadPool(this.threads.value());
     } catch (final Exception ex) {
       if (Thread.currentThread().isInterrupted()) {
-        return new Conclusion(start, System.currentTimeMillis(), 0);
+        return new Report(start, System.currentTimeMillis(), 0);
       }
       throw new IOException(ex);
     }
@@ -58,7 +58,7 @@ public final class Connections implements Front {
           socket = this.server.accept();
         } catch (final IOException ex) {
           if (Thread.currentThread().isInterrupted()) {
-            return new Conclusion(
+            return new Report(
               start,
               System.currentTimeMillis(),
               requests.get()
@@ -67,7 +67,7 @@ public final class Connections implements Front {
           throw ex;
         } catch (final Exception ex) {
           if (Thread.currentThread().isInterrupted()) {
-            return new Conclusion(
+            return new Report(
               start,
               System.currentTimeMillis(),
               requests.get()
@@ -91,7 +91,7 @@ public final class Connections implements Front {
         this.exec.shutdown();
       }
     }
-    return new Conclusion(
+    return new Report(
       start,
       System.currentTimeMillis(),
       requests.get()

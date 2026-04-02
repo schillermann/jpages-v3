@@ -2,14 +2,15 @@
 
 A simple, composable Java web framework built on raw sockets.
 
-Inspired by pure OOP, Alan Kay with [Smalltalk](https://en.wikipedia.org/wiki/Smalltalk), and Yegor Bugayenko's [Cactoos](https://github.com/yegor256/takes), [Takes](https://github.com/yegor256/takes), and [JPages](https://github.com/yegor256/jpages).
+Inspired by pure OOP, Alan Kay with [Smalltalk](https://en.wikipedia.org/wiki/Smalltalk), and Yegor Bugayenko's [Cactoos](https://github.com/yegor256/cactoos), [Takes](https://github.com/yegor256/takes), and [JPages](https://github.com/yegor256/jpages).
 
 - [Quick Start](#quick-start)
 - [Request](#request)
   - [Body Decorators](#body-decorators)
 - [Routing](#routing)
 - [Logging](#logging)
-- [Metrics](#metrics)
+- [Reporting](#reporting)
+- [Conclusion Decorators](#conclusion-decorators)
 - [Concurrency & Configuration](#concurrency--configuration)
 - [Installation](#installation)
 - [Design](#design)
@@ -148,7 +149,7 @@ new WireFront(
 ## Logging
 
 JResponses follows the OOP principle of decoration.
-JResponses follows the "Elegant Objects" principle of decoration. You can log the server lifecycle and connection activity by wrapping your objects with `LoggedFront` and `LoggedSession`:
+You can log the server lifecycle and connection activity by wrapping your objects with `LoggedFront` and `LoggedSession`:
 
 ```java
 new LoggedFront(
@@ -169,20 +170,33 @@ This separation follows the Single Responsibility Principle, allowing you to ind
 - **`LoggedFront`**: Logs when the server starts and stops, including total uptime.
 - **`LoggedSession`**: Logs every incoming connection with the remote address.
 
-## Metrics
+## Reporting
 
-When the server reaches its `Conclusion`, you can extract metrics from it using specialized "Extractor" objects. This keeps the conclusion object pure and follows the OOP principle of decoupling:
+When the server reaches its `Conclusion`, you can ask it to speak for itself by providing a `Media`.
+This keeps the object autonomous and avoids data leaks:
+
+### To Console
+```java
+Conclusion res = new WireFront(session).conclusion();
+res.media(new ConsoleMedia());
+```
+
+### To Log
+```java
+Conclusion res = new WireFront(session).conclusion();
+res.media(new LoggedMedia());
+```
+
+## Conclusion Decorators
+
+You can decorate a `Conclusion` to add more information or change how it reports itself.
+This maintains the OOP principle of avoiding getters while allowing for complex metrics:
 
 ```java
 Conclusion res = new WireFront(session).conclusion();
 
-long uptime = new UptimeOf(res).value();
-long total = new RequestsOf(res).value();
-
-System.out.printf(
-    "Server finished after %d ms and handled %d requests.\n",
-    uptime, total
-);
+// Add Average Load (Requests Per Second) to the report
+new AverageLoad(res).media(new ConsoleMedia());
 ```
 
 ## Concurrency & Configuration

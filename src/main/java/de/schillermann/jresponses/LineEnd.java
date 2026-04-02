@@ -20,6 +20,6 @@ public final class LineEnd implements Scalar<Conclusion> {
         this.cursor.next();
       }
     }
-    return new Conclusion();
+    return new Report();
   }
 }
